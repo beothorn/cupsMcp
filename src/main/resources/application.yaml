@@ -1,0 +1,11 @@
+logging:
+  pattern:
+    console:
+spring:
+  ai:
+    mcp:
+      server:
+        name: print-server
+        version: 1.0.0
+  main:
+    banner-mode: off
