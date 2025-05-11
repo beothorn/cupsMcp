@@ -12,13 +12,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Service
 public class PrintService {
 
-    @Tool(name = "print_file", description = "Prints a file given a name.")
+    @Tool(name = "print_file", description = "Prints a file.")
     public String printFile(
-        @ToolParam(description = "The file name.") final String fileName // TODO: ensure filename is inside print folder
+        @ToolParam(description = "The file full path.") final String fileName
     ) {
         // Retrieve environment variables
         String printerIp = System.getenv("PRINTER_IP");
@@ -31,7 +33,18 @@ public class PrintService {
 
         File file = new File(printFolder, fileName);
         if (!file.exists() || !file.isFile()) {
-            return "Error: File not found: " + file.getAbsolutePath();
+            return "File not found within the print folder.";
+        }
+
+        try {
+            Path basePath = Paths.get(printFolder).toRealPath().normalize();
+            Path filePath = basePath.resolve(fileName).normalize();
+
+            if (!filePath.startsWith(basePath)) {
+                return "File not found within the print folder.";
+            }
+        } catch (Exception e) {
+            return "Error: Exception occurred while printing: " + e.getMessage();
         }
 
         try (InputStream inputStream = new FileInputStream(file)) {
