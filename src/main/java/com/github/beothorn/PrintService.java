@@ -31,7 +31,7 @@ public class PrintService {
             return "Error: Missing environment variables. Please set PRINTER_IP, PRINTER_NAME, and PRINT_FOLDER.";
         }
 
-        File file = new File(printFolder, fileName);
+        File file = new File(fileName);
         if (!file.exists() || !file.isFile()) {
             return "File not found within the print folder.";
         }
